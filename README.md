@@ -1,7 +1,6 @@
 # 3D-Cube-Render
-## How to
-I'm not exactly certain *why* you would want to run this, but if that's something you want to do, here are the instructions :
-(Also, the instructions will only work for Windows, but the process is the same as any other compilation you would want to do)
+## Running
+I'm not exactly certain *why* you would want to install this, but if that's something you want to do, here are the instructions for Windows :
 
 - Have (MinGW)[https://sourceforge.net/projects/mingw/] installed and in your PATH
 - Download the MinGW version of (SFML)[https://www.sfml-dev.org/download/sfml/2.5.1/] and extract it somewhere on your computer
