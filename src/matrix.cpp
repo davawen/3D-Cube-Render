@@ -1,10 +1,7 @@
-#include <iostream>
-#include <string>
-
 #include "matrix.hpp"
-#include "vector.hpp"
 
 //Ugly as fuck, I know
+#include "vector.hpp"
 
 Matrix matrixMultiplication(Matrix matrix1, Matrix matrix2)
 {

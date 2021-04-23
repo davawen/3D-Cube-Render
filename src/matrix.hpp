@@ -4,9 +4,11 @@
 #define MATRIX_H
 //=======================================================
 
-class Vector3;
-
+#include <iostream>
+#include <string>
 #include <vector>
+
+class Vector3; //Forward declaration
 
 typedef std::vector<std::vector<float>> Matrix;
 
