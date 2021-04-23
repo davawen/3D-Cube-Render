@@ -4,6 +4,8 @@
 #include "matrix.hpp"
 #include "vector.hpp"
 
+//Ugly as fuck, I know
+
 Matrix matrixMultiplication(Matrix matrix1, Matrix matrix2)
 {
 	if(matrix1.size() != matrix2[0].size())

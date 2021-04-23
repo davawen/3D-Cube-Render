@@ -91,8 +91,8 @@ public:
 	void draw(sf::RenderWindow &window, Vector3 cameraPos)
 	{
 		sf::Vector2f vectors[9];
-		sf::Color distances[9];
-		
+		sf::Color colors[9];
+
 		int i = 0;
 		for(auto &vertice : vertices)
 		{
@@ -100,8 +100,8 @@ public:
 
 			uint32_t fallOff = static_cast<uint32_t>(0xFF * (powf(1.005, -cPos.length())));
 
-			distances[i] = sf::Color(0xFFFFFF00 + fallOff);
-
+			colors[i] = sf::Color(0xFFFFFF00 + fallOff);
+			
 			Matrix proj =
 			{
 				{1, 0, 0},
@@ -130,74 +130,49 @@ public:
 			circles[i].setRadius(5.f);
 			circles[i].setOrigin(5.f, 5.f);
 			circles[i].setPosition(vectors[i]);
-			circles[i].setFillColor(distances[i]);
+			circles[i].setFillColor(colors[i]);
 		}
 		
 		int lineIndexes[24];
 		
+		#pragma region Connect vertices
+		//Can't figure out how to automate this
+		//Probably some sort of triangulation table
 		
+		lineIndexes[0] = 0;
+		lineIndexes[1] = 1;
+		lineIndexes[2] = 0;
+		lineIndexes[3] = 2;
+		lineIndexes[4] = 1;
+		lineIndexes[5] = 3;
+		lineIndexes[6] = 2;
+		lineIndexes[7] = 3;
+		lineIndexes[8] = 0;
+		lineIndexes[9] = 4;
+		lineIndexes[10] = 2;
+		lineIndexes[11] = 6;
+		lineIndexes[12] = 1;
+		lineIndexes[13] = 5;
+		lineIndexes[14] = 3;
+		lineIndexes[15] = 7;
+		lineIndexes[16] = 4;
+		lineIndexes[17] = 5;
+		lineIndexes[18] = 4;
+		lineIndexes[19] = 6;
+		lineIndexes[20] = 5;
+		lineIndexes[21] = 7;
+		lineIndexes[22] = 6;
+		lineIndexes[23] = 7;
+		
+		#pragma endregion
 		
 		sf::VertexArray lines(sf::PrimitiveType::Lines, 24);
 
-		lines[0].position = vectors[0];
-		lines[0].color = sf::Color::Red;
-		lines[1].position = vectors[1];
-		lines[1].color = distances[1];
-
-		lines[2].position = vectors[0];
-		lines[2].color = sf::Color::Red;
-		lines[3].position = vectors[2];
-		lines[3].color = distances[2];
-
-		lines[4].position = vectors[1];
-		lines[4].color = distances[1];
-		lines[5].position = vectors[3];
-		lines[5].color = distances[3];
-
-		lines[6].position = vectors[2];
-		lines[6].color = distances[2];
-		lines[7].position = vectors[3];
-		lines[7].color = distances[3];
-
-		lines[8].position = vectors[0];
-		lines[8].color = sf::Color::Red;
-		lines[9].position = vectors[4];
-		lines[9].color = distances[4];
-		
-		lines[10].position = vectors[2];
-		lines[10].color = distances[2];
-		lines[11].position = vectors[6];
-		lines[11].color = distances[6];
-		
-		lines[12].position = vectors[1];
-		lines[12].color = distances[1];
-		lines[13].position = vectors[5];
-		lines[13].color = distances[5];
-		
-		lines[14].position = vectors[3];
-		lines[14].color = distances[3];
-		lines[15].position = vectors[7];
-		lines[15].color = distances[7];
-		
-		lines[16].position = vectors[4];
-		lines[16].color = distances[4];
-		lines[17].position = vectors[5];
-		lines[17].color = distances[5];
-		
-		lines[18].position = vectors[4];
-		lines[18].color = distances[4];
-		lines[19].position = vectors[6];
-		lines[19].color = distances[6];
-		
-		lines[20].position = vectors[5];
-		lines[20].color = distances[5];
-		lines[21].position = vectors[7];
-		lines[21].color = distances[7];
-		
-		lines[22].position = vectors[6];
-		lines[22].color = distances[6];
-		lines[23].position = vectors[7];
-		lines[23].color = distances[7];
+		for (unsigned int i = 0; i < 24; i++)
+		{
+			lines[i].position = vectors[lineIndexes[i]];
+			lines[i].color = colors[lineIndexes[i]];
+		}
 
 		for (auto &circle : circles)
 		{
@@ -215,7 +190,6 @@ int main()
 	Cube cube(Vector3(-100.f, -100.f, 100.f), Vector3(200.f, 200.f, 200.f), Vector3());
 	
 	Vector3 cameraPos(0.f, 0.f, 0.f);
-	Vector3 cameraAngle(0.f, 0.f, 0.f);
 	
 	sf::Clock deltaClock;
 	sf::Clock timePassed;
@@ -246,9 +220,6 @@ int main()
 		
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::Z))     cameraPos += Vector3(0.f, 0.f, 50.f*dt);
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::S))     cameraPos -= Vector3(0.f, 0.f, 50.f*dt);
-		
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::A))     cameraAngle.y -= PI/2 * dt;
-		if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))     cameraAngle.y += PI/2 * dt;
 		
 		randomRotation += (static_cast<float>(rand() % 100) - 50.f) / 1000.f * dt;
 
