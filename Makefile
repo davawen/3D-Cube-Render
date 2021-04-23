@@ -2,7 +2,7 @@ CC=g++
 
 CFLAGS=-c -Wall -Wno-unknown-pragmas
 
-SOURCE_FILES = main.cpp matrix.cpp vector.cpp
+SOURCE_FILES = main.cpp matrix.cpp vector.cpp cube.cpp
 SOURCE_FILES := $(addprefix src/,$(SOURCE_FILES))
 
 OBJECT_FILES = $(addprefix obj/,$(notdir $(SOURCE_FILES:%.cpp=%.o)))
