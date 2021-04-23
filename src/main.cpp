@@ -3,8 +3,10 @@
 #include <math.h>
 #include <iostream>
 
-#include "matrix.hpp"
-#include "vector.hpp"
+#include "functions/random.hpp"
+
+#include "math/matrix.hpp"
+#include "math/vector.hpp"
 #include "cube.hpp"
 
 constexpr float PI = 3.14159265359;
@@ -22,7 +24,20 @@ int main()
 	
 	float randomRotation = 1.f;
 	
-	while (window.isOpen())
+	sf::Font font;
+	
+	if(!font.loadFromFile("arial.ttf"))
+	{
+		return 0;
+	}
+	
+	sf::Text fpsText;
+	
+	fpsText.setFont(font);
+	fpsText.setCharacterSize(16);
+	fpsText.setFillColor(sf::Color::White);
+	
+	while(window.isOpen())
 	{
 		float dt = deltaClock.restart().asSeconds();
 		
@@ -59,7 +74,11 @@ int main()
 		if(sf::Keyboard::isKeyPressed(sf::Keyboard::P)) cube.rotate(Vector3(0.f, 0.f, -PI/2 * dt));
 		
 		window.clear();
-
+		
+		fpsText.setString("FPS: " + std::to_string(1/dt));
+		
+		window.draw(fpsText);
+		
 		cube.draw(
 			window,
 			cameraPos

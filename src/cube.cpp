@@ -83,25 +83,22 @@ void Cube::draw(sf::RenderWindow &window, Vector3 cameraPos)
 	{
 		Vector3 cPos = vertice - cameraPos;
 
-		uint32_t fallOff = static_cast<uint32_t>(0xFF * (powf(1.005, -cPos.length())));
-
-		colors[i] = sf::Color(0xFFFFFF00 + fallOff);
+		//uint32_t fallOff = static_cast<uint32_t>(0xFF * (powf(1.005, -cPos.length())));
+		
+		//Calculate shading
+		
+		//colors[i] = sf::Color(0xFFFFFF00 + fallOff);
+		colors[i] = sf::Color(0xFFFFFF50);
 
 		Matrix proj =
-			{
-				{1, 0, 0},
-				{0, 1, 0}};
+		{
+			{1, 0, 0},
+			{0, 1, 0}
+		};
 
 		std::vector<float> product = matrixVectorMultiplication(proj, &cPos);
 
 		vectors[i] = sf::Vector2f(product[0] + 300.f, product[1] + 300.f);
-
-		// if(i == 0)
-		// {
-		// 	std::cout << vertices[0].toString() << "\n"
-		// 			  << cPos.toString() << "\n"
-		// 			  << "  x: " << vectors[0].x << "  y: " << vectors[0].y << "\n";
-		// }
 
 		i++;
 	}
@@ -113,54 +110,70 @@ void Cube::draw(sf::RenderWindow &window, Vector3 cameraPos)
 		circles[i].setRadius(5.f);
 		circles[i].setOrigin(5.f, 5.f);
 		circles[i].setPosition(vectors[i]);
-		circles[i].setFillColor(colors[i]);
+		// circles[i].setFillColor(colors[i]);
+		circles[i].setFillColor(sf::Color(((randSeed(0xA21BEA + i, 0, 0xFF) << 24) + (randSeed(0xFFE89FF + i, 0, 0xFF) << 18) + (randSeed(102 + i, 0, 0xFF) << 8 ) + 0xFF)));
 	}
-
-	int lineIndexes[24];
-
-#pragma region Connect vertices
+	
+	//First level of pain
+	int lineIndexes[12][2] = 
+	{
+		{ 0, 1 },
+		{ 0, 2 },
+		{ 1, 3 },
+		{ 2, 3 },
+		{ 0, 4 },
+		{ 2, 6 },
+		{ 1, 5 },
+		{ 3, 7 },
+		{ 4, 5 },
+		{ 4, 6 },
+		{ 5, 7 },
+		{ 6, 7 }
+	};
 	//Can't figure out how to automate this
 	//Probably some sort of triangulation table
 
-	lineIndexes[0] = 0;
-	lineIndexes[1] = 1;
-	lineIndexes[2] = 0;
-	lineIndexes[3] = 2;
-	lineIndexes[4] = 1;
-	lineIndexes[5] = 3;
-	lineIndexes[6] = 2;
-	lineIndexes[7] = 3;
-	lineIndexes[8] = 0;
-	lineIndexes[9] = 4;
-	lineIndexes[10] = 2;
-	lineIndexes[11] = 6;
-	lineIndexes[12] = 1;
-	lineIndexes[13] = 5;
-	lineIndexes[14] = 3;
-	lineIndexes[15] = 7;
-	lineIndexes[16] = 4;
-	lineIndexes[17] = 5;
-	lineIndexes[18] = 4;
-	lineIndexes[19] = 6;
-	lineIndexes[20] = 5;
-	lineIndexes[21] = 7;
-	lineIndexes[22] = 6;
-	lineIndexes[23] = 7;
-
-#pragma endregion
-
-	sf::VertexArray lines(sf::PrimitiveType::Lines, 24);
-
-	for (unsigned int i = 0; i < 24; i++)
+	//Next level of pain
+	int triangleIndexes[12][3] = 
 	{
-		lines[i].position = vectors[lineIndexes[i]];
-		lines[i].color = colors[lineIndexes[i]];
+		{ 0, 1, 2 },
+		{ 1, 2, 3 },
+		{ 0, 2, 4 },
+		{ 2, 4, 6 },
+		{ 2, 6, 7 },
+		{ 2, 3, 7 },
+		{ 4, 5, 6 },
+		{ 5, 6, 7 },
+		{ 3, 5, 7 },
+		{ 1, 3, 5 },
+		{ 0, 1, 4 },
+		{ 1, 4, 5 }
+	};
+	
+	sf::VertexArray lines(sf::PrimitiveType::Lines, 24);
+	sf::VertexArray triangles(sf::PrimitiveType::Triangles, 36); //36
+	
+	for(unsigned int i = 0; i < 12; i++)
+	{
+		lines[i*2    ].position = vectors[lineIndexes[i][0]];
+		lines[i*2 + 1].position = vectors[lineIndexes[i][1]];
+		
+		lines[i*2    ].color = sf::Color::Red;
+		lines[i*2 + 1].color = sf::Color::Red;
+		
+		triangles[i*3    ].position = vectors[triangleIndexes[i][0]];
+		triangles[i*3 + 1].position = vectors[triangleIndexes[i][1]];
+		triangles[i*3 + 2].position = vectors[triangleIndexes[i][2]];
+		
+		triangles[i*3    ].color = circles[triangleIndexes[i][0]].getFillColor();//sf::Color::White;
+		triangles[i*3 + 1].color = circles[triangleIndexes[i][1]].getFillColor();//sf::Color::White;
+		triangles[i*3 + 2].color = circles[triangleIndexes[i][2]].getFillColor();//sf::Color::White;
 	}
 
+	window.draw(triangles);
+	window.draw(lines);
 	for (auto &circle : circles)
 	{
 		window.draw(circle);
 	}
-
-	window.draw(lines);
 }
