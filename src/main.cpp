@@ -3,10 +3,10 @@
 #include <math.h>
 #include <iostream>
 
-#include "functions/random.hpp"
+#include "random.hpp"
 
-#include "math/matrix.hpp"
-#include "math/vector.hpp"
+#include "matrix.hpp"
+#include "vector.hpp"
 #include "cube.hpp"
 
 constexpr float PI = 3.14159265359;

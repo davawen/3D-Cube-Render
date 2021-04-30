@@ -7,9 +7,9 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-#include "math/vector.hpp"
-#include "math/matrix.hpp"
-#include "functions/random.hpp"
+#include "vector.hpp"
+#include "matrix.hpp"
+#include "random.hpp"
 
 class Cube
 {
